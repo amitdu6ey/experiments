@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pokemon Browser</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <h1 class="logo">&#9670; Pokedex</h1>
+      <nav class="nav">
+        <button id="btn-all" class="nav-btn active">All Pokemon</button>
+        <button id="btn-bookmarks" class="nav-btn">Bookmarks <span id="bookmark-count" class="badge">0</span></button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main">
+    <div id="grid" class="grid"></div>
+    <div id="load-more-wrapper" class="load-more-wrapper">
+      <button id="btn-load-more" class="btn-load-more">Load more</button>
+    </div>
+    <p id="empty-msg" class="empty-msg hidden">No bookmarks yet. Browse Pokemon and click the bookmark icon to save your favourites.</p>
+  </main>
+
+  <!-- Detail modal -->
+  <div id="modal-overlay" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modal-name">
+    <div class="modal">
+      <button id="modal-close" class="modal-close" aria-label="Close">&times;</button>
+      <div id="modal-content" class="modal-content"></div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
