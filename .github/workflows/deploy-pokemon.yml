@@ -6,7 +6,7 @@ on:
     paths:
       - 'pokemon/**'
       - '.github/workflows/deploy-pokemon.yml'
-  workflow_dispatch:   # allow manual trigger from Actions tab
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -32,10 +32,22 @@ jobs:
         with:
           enablement: true
 
-      - name: Upload pokemon/ as Pages artifact
+      - name: Build site structure
+        run: |
+          mkdir -p _site/exp/pokedex
+          cp -r pokemon/. _site/exp/pokedex/
+          # Root redirect → /exp/pokedex/
+          cat > _site/index.html <<'EOF'
+          <!DOCTYPE html>
+          <meta charset="utf-8">
+          <meta http-equiv="refresh" content="0; url=exp/pokedex/">
+          <link rel="canonical" href="exp/pokedex/">
+          EOF
+
+      - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: pokemon/
+          path: _site/
 
       - name: Deploy to GitHub Pages
         id: deployment
