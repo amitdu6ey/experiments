@@ -1,89 +1,108 @@
 # codebase-index
 
-A zero-dependency CLI that scans any project and generates a `CODEBASE_INDEX.md` — a compact, structured map of your codebase that AI tools (GitHub Copilot, Claude, etc.) can read to navigate directly to the parts that matter, without scanning every file.
+A zero-dependency CLI that scans any project and generates a `CODEBASE_INDEX.md` — a compact, structured map that AI tools (GitHub Copilot, Claude, etc.) can read to navigate directly to the parts that matter, without scanning every file.
 
-## The Problem
+**Primary focus: Java Spring Boot** — extracts REST endpoints, component layers (Controller/Service/Repository/Entity), Spring annotations, pom.xml, and application config automatically.
 
-When you open a large project in an AI-assisted editor, the AI has to infer structure by reading many files. This is slow and often misses important context. `codebase-index` solves this by generating a single document that acts as a **table of contents + API reference + flag registry** for your project.
-
-## How It Works
-
-1. Run the CLI against any project directory
-2. It walks the file tree, extracts symbols (functions, classes, exports), and collects `@flag` annotations
-3. Outputs a `CODEBASE_INDEX.md` in the target directory
-4. Open that file in your editor — Copilot now has a complete map
-
-## Usage
+## Quickstart (no install)
 
 ```bash
-# Scan current directory
-node /path/to/codebase-index/index.js
+# Download and run in one line
+curl -s https://raw.githubusercontent.com/amitdu6ey/experiments/main/codebase-index/index.js \
+  -o codebase-index.js && node codebase-index.js /path/to/your/project
+```
 
-# Scan a specific project
-node /path/to/codebase-index/index.js /path/to/your/project
+Or clone and run:
 
-# Or if installed globally
+```bash
+git clone https://github.com/amitdu6ey/experiments.git
+node experiments/codebase-index/index.js /path/to/your/project
+```
+
+Or install globally:
+
+```bash
+npm install -g /path/to/experiments/codebase-index
 codebase-index /path/to/your/project
+```
+
+## What It Generates
+
+Running the CLI produces `CODEBASE_INDEX.md` in your project root. Open it in your editor and Copilot reads it as context.
+
+### Spring Boot output example
+
+```
+## Token Cost Estimate
+| Full project scan | ~42,800 tokens | baseline |
+| This index        |  ~1,240 tokens | 97.1% saved |
+
+## Spring Boot Project
+### Build Info
+- Spring Boot: 3.2.1 · Java: 17
+- Key deps: spring-boot-starter-web, spring-boot-starter-data-jpa, lombok
+
+### Application Config
+| server.port | 8080 |
+| spring.datasource.url | jdbc:mysql://localhost/mydb |
+
+### REST API Routes
+| GET  | /api/users        | UserController.getAll   |
+| GET  | /api/users/{id}   | UserController.getById  |
+| POST | /api/users        | UserController.create   |
+| DEL  | /api/users/{id}   | UserController.delete   |
+
+### Components by Layer
+#### 🌐 Controller  — UserController, AuthController
+#### ⚙️ Service     — UserService, EmailService
+#### 🗄️ Repository  — UserRepository, OrderRepository
+#### 📦 Entity      — User, Order, Product
+#### ⚡ Configuration — SecurityConfig, CorsConfig
 ```
 
 ## Flagging Important Code
 
-Add `@flag` annotations anywhere in your source to mark sections as important:
+Add `@flag` annotations to mark critical sections — they appear in a dedicated table:
 
-```js
+```java
 // @flag: main authentication entry point
-function authenticate(user, password) { ... }
+public class AuthController { ... }
 
-// @flag: critical — do not modify without review
-const RATE_LIMIT = 100;
+// @flag: critical — do not modify rate limit without review
+private static final int RATE_LIMIT = 100;
 ```
 
 ```python
-# @flag: core business logic
-def calculate_pricing(order):
-    ...
+# @flag: core pricing logic
+def calculate_pricing(order): ...
 ```
 
-```html
-<!-- @flag: root app shell -->
-<div id="app"></div>
-```
+The index collects all flags with file path + line number so Copilot can jump straight to them.
 
-These appear in the **Flagged Sections** table of the index with file path and line number, so an AI can jump straight to them.
+## Token Cost Reduction
 
-## What Gets Extracted
-
-| Category | Details |
-|----------|---------|
-| Entry points | `index.*`, `main.*`, `app.*`, `server.*`, `cli.*` |
-| JS/TS symbols | `export function`, `export class`, `export const`, top-level `function`, `class` |
-| Python symbols | `def`, `class` at module level |
-| Go symbols | `func`, `type` |
-| `@flag` annotations | Any file, any language — with line numbers |
-
-## Output Format
+The CLI shows token savings in both the terminal and the generated index:
 
 ```
-CODEBASE_INDEX.md
-├── Summary (file count, flag count, entry points)
-├── Entry Points table
-├── Flagged Sections table  ← what Copilot uses most
-├── Public Symbols table
-├── File Tree
-└── Per-file details (symbols + flags with line numbers)
+Token savings: 97.1% — index is ~1,240 tokens vs ~42,800 for full scan
 ```
 
-## Installation
+This directly reduces cost when using pay-per-token APIs and prevents context window overflow on large projects.
 
-No install required — just run with Node.js (v14+):
+## Supported Languages
 
-```bash
-node index.js [target-dir]
-```
+| Language | Symbols extracted | Endpoints |
+|----------|-------------------|-----------|
+| **Java / Spring Boot** | Classes, interfaces, methods, Spring annotations | REST routes from `@GetMapping`, `@PostMapping`, etc. |
+| JavaScript / TypeScript | Functions, classes, exports | — |
+| Python | Functions, classes (top-level) | — |
+| Go | Functions, types | — |
+| Ruby | Methods, classes, modules | — |
+| Rust | Functions, structs, enums, traits | — |
+| `pom.xml` | Spring Boot version, Java version, deps | — |
+| `application.properties/.yml` | Key config values | — |
 
-To use as a global command:
+## Requirements
 
-```bash
-npm install -g /path/to/codebase-index
-codebase-index [target-dir]
-```
+- Node.js v14 or higher
+- No npm dependencies — uses only built-in `fs` and `path`
