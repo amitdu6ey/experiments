@@ -1,0 +1,14 @@
+{
+  "name": "codebase-index",
+  "version": "1.0.0",
+  "description": "CLI that generates an AI-readable codebase index for Copilot/Claude navigation",
+  "main": "index.js",
+  "bin": {
+    "codebase-index": "./index.js"
+  },
+  "engines": {
+    "node": ">=14"
+  },
+  "keywords": ["copilot", "ai", "codebase", "index", "navigation", "cli"],
+  "license": "MIT"
+}

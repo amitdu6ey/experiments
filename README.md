@@ -20,6 +20,7 @@ experiments/
 | Project | Description | Stack |
 |---------|-------------|-------|
 | [pokemon](./pokemon) | Browse, view details, and bookmark Pokemon using the free PokeAPI | Vanilla JS, HTML, CSS |
+| [codebase-index](./codebase-index) | CLI that generates an AI-readable codebase index (`CODEBASE_INDEX.md`) for Copilot/Claude navigation | Node.js (no deps) |
 
 ## Conventions
 
