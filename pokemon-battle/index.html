@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pokédex Battle</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800&family=Press+Start+2P&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<button id="mute" class="mute" aria-label="Toggle sound">♪</button>
+
+<!-- TITLE -->
+<section id="title" class="screen active">
+  <div class="drift" id="drift"></div>
+  <div class="title-in">
+    <div class="ball"><i></i></div>
+    <h1><small>◆ Pokédex</small>BATTLE</h1>
+    <p class="sub">Pick three. Beat trainer after trainer. See how long your streak lasts.</p>
+    <button class="big" id="btnStart">Start</button>
+    <div class="records"><span>Best streak <b id="recBest">0</b></span><span>Favourites <b id="recFav">0</b></span></div>
+  </div>
+</section>
+
+<!-- TEAM SELECT -->
+<section id="select" class="screen">
+  <header class="bar">
+    <button class="back" id="selBack">‹</button>
+    <h2>Choose your team</h2>
+    <input id="search" type="search" placeholder="Search Pokémon…" autocomplete="off">
+    <div class="tabs"><button id="tabAll" class="on">All</button><button id="tabFav">★ Favourites</button></div>
+  </header>
+  <div id="grid" class="grid"></div>
+  <footer class="tray">
+    <div class="slots" id="slots"></div>
+    <div class="tray-btns"><button class="ghost" id="btnRandom">Random team</button><button class="big sm" id="btnGo" disabled>Battle!</button></div>
+  </footer>
+</section>
+
+<!-- BATTLE -->
+<section id="battle" class="screen">
+  <div class="wrapb">
+    <div class="arena" id="arena">
+      <canvas id="fx"></canvas>
+      <div class="sky"></div>
+      <div class="plat e"></div><div class="plat p"></div>
+      <div class="sprwrap e" id="eWrap"><img id="eImg" alt=""></div>
+      <div class="sprwrap p" id="pWrap"><img id="pImg" alt=""></div>
+      <div class="statbox e" id="eBox"><div class="top"><b id="eName"></b><span id="eLv"></span></div><div class="tys" id="eTys"></div><div class="hp"><i id="eBar"></i></div><div class="party" id="eParty"></div></div>
+      <div class="statbox p" id="pBox"><div class="top"><b id="pName"></b><span id="pLv"></span></div><div class="tys" id="pTys"></div><div class="hp"><i id="pBar"></i></div><div class="hpn" id="pNum"></div><div class="party" id="pParty"></div></div>
+      <div class="roundtag" id="roundTag"></div>
+    </div>
+    <div class="console">
+      <div class="msg" id="msg"></div>
+      <div class="menu" id="menu"></div>
+    </div>
+  </div>
+</section>
+
+<!-- OVERLAY -->
+<div id="overlay" class="overlay hidden"><div class="ocard" id="ocard"></div></div>
+<script src="app.js"></script>
+</body>
+</html>
