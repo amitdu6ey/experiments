@@ -193,9 +193,9 @@ The switch, request by request:
 ```mermaid
 sequenceDiagram
     participant C as Client
-    participant P as Proxy (public port)
-    participant B as Blue (127.0.0.1:9001)
-    participant G as Green (127.0.0.1:9002)
+    participant P as Proxy on the public port
+    participant B as Blue on port 9001
+    participant G as Green on port 9002
     participant S as Supervisor
 
     C->>P: request A
