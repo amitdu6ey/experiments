@@ -50,6 +50,21 @@ public final class SampleServer {
             respond(exchange, 200, "slow " + millis + "ms " + release);
         });
 
+        // Reports what the server actually received, so a checkpoint can prove
+        // that a proxy in front passes method, query, headers and body through.
+        server.createContext("/echo", exchange -> {
+            byte[] body = exchange.getRequestBody().readAllBytes();
+            String preview = new String(body, 0, Math.min(body.length, 64), StandardCharsets.UTF_8);
+            String report = "method=" + exchange.getRequestMethod() + "\n"
+                    + "query=" + exchange.getRequestURI().getRawQuery() + "\n"
+                    + "host=" + exchange.getRequestHeaders().getFirst("Host") + "\n"
+                    + "forwarded-for=" + exchange.getRequestHeaders().getFirst("X-Forwarded-For") + "\n"
+                    + "bytes=" + body.length + "\n"
+                    + "body=" + preview + "\n"
+                    + "release=" + release + "\n";
+            respond(exchange, 200, report);
+        });
+
         server.createContext("/ticks", exchange -> respond(exchange, 200, Long.toString(ticks.get())));
 
         server.createContext("/health/readiness", exchange -> respond(exchange, 200, "UP"));

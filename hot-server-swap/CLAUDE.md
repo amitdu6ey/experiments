@@ -17,6 +17,18 @@ A tool that swaps a live server for a new build inside one container with zero d
 - A checkpoint must be able to fail. Where it claims zero failures, include a case that shows failures are detected.
 - Before finishing an iteration, re-run every earlier checkpoint.
 - Update the status table in `README.md` after each iteration.
+- Update the matching `status` values in `site/map.js` in the same commit (`built`, `next`, `planned`, `given`, `parked`), and move `next` to the following iteration.
+
+## Scope
+
+- An AI agent already running on the server is assumed. This project builds the swap toolkit that agent calls: change a copy, build, test green, flip, bake, retire.
+- Securing the agent's channel is parked. Do not build it unless asked, and do not describe it as solved.
+- The swap happens on the server itself, through the proxy's pointer. Load-balancer and DNS switching are not part of this design.
+
+## The project map
+
+- `site/index.html` and `site/map.js` are a static page with no build step and no dependencies beyond a web font.
+- The page is published by `.github/workflows/deploy-pokemon.yml`, which assembles every project's pages into one GitHub Pages site. That workflow is shared: change only the hot-server-swap lines in it.
 
 ## Conventions
 
