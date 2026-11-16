@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hot Server Swap: the project map</title>
+<meta name="description" content="A walkable map of the Hot Server Swap project. Every cloud opens into its own universe: the swap, the server, what a flip touches, and the roadmap.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sky-a: #d9ecfb;
+    --sky-b: #b9d8f5;
+    --ink: #12203f;
+    --ink-soft: rgba(18, 32, 63, 0.72);
+    --rule: rgba(18, 32, 63, 0.18);
+    --cloud: #fcfeff;
+    --cloud-ink: #12203f;
+    --cloud-soft: #4a5a7d;
+    --sun: #f4b61a;
+    --signal: #e2502f;
+    --origin-x: 50%;
+    --origin-y: 40%;
+    --face: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: var(--face);
+    font-size: 1.0625rem;
+    line-height: 1.5;
+    color: var(--ink);
+    background: linear-gradient(180deg, var(--sky-a), var(--sky-b)) fixed;
+    transition: color 0.4s ease;
+  }
+
+  /* The sky darkens as you go deeper. A second layer fades in over the first. */
+  .depth {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(180deg, var(--sky-a), var(--sky-b));
+    transition: opacity 0.5s ease;
+  }
+
+  .wrap {
+    max-width: 68rem;
+    margin: 0 auto;
+    padding: 1.25rem 1.25rem 4rem;
+  }
+
+  /* ---- top bar and trail ---- */
+
+  .bar {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .bar a {
+    color: inherit;
+    font-weight: 600;
+    text-underline-offset: 0.2em;
+  }
+
+  .trail {
+    margin: 1.5rem 0 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 0.5rem;
+    align-items: center;
+    font-size: 0.9375rem;
+    min-height: 2rem;
+  }
+
+  .trail li { display: flex; align-items: center; gap: 0.5rem; }
+
+  .trail li + li::before {
+    content: "";
+    width: 0.45rem;
+    height: 0.45rem;
+    border-right: 2px solid var(--ink-soft);
+    border-top: 2px solid var(--ink-soft);
+    transform: rotate(45deg);
+  }
+
+  .trail button {
+    font: inherit;
+    color: inherit;
+    background: none;
+    border: 0;
+    padding: 0.15rem 0;
+    cursor: pointer;
+    text-decoration: underline;
+    text-decoration-color: var(--rule);
+    text-underline-offset: 0.25em;
+  }
+
+  .trail button:hover { text-decoration-color: currentColor; }
+  .trail [aria-current] { font-weight: 600; }
+
+  /* ---- where you are ---- */
+
+  .stage { transform-origin: var(--origin-x) var(--origin-y); }
+
+  .here { max-width: 44rem; margin-top: 1.25rem; }
+
+  .here h1 {
+    font-size: clamp(2.5rem, 9vw, 5.25rem);
+    font-weight: 800;
+    line-height: 0.95;
+    letter-spacing: -0.035em;
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  .here h1:focus { outline: none; }
+
+  .here .line {
+    font-size: clamp(1.2rem, 2.6vw, 1.5rem);
+    line-height: 1.3;
+    margin: 1rem 0 0;
+    max-width: 30em;
+    text-wrap: pretty;
+  }
+
+  .state {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1.1rem;
+    font-weight: 600;
+    font-size: 0.9375rem;
+  }
+
+  .facts { margin: 1.5rem 0 0; max-width: 40rem; }
+  .facts div { padding: 0.9rem 0; border-top: 1px solid var(--rule); }
+  .facts dt { font-weight: 600; font-size: 0.9375rem; }
+  .facts dd { margin: 0.2rem 0 0; color: var(--ink-soft); text-wrap: pretty; }
+
+  .inside {
+    margin: 2.75rem 0 0;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  /* ---- the clouds ---- */
+
+  .sky {
+    list-style: none;
+    margin: 1.25rem 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(15.5rem, 1fr));
+    gap: 1.75rem 1.5rem;
+  }
+
+  .cloud {
+    position: relative;
+    display: block;
+    width: 100%;
+    min-height: 10.5rem;
+    padding: 1.6rem 1.6rem 1.5rem;
+    font: inherit;
+    text-align: left;
+    color: var(--cloud-ink);
+    background: var(--cloud);
+    border: 0;
+    border-radius: 3.2rem 4.6rem 3.4rem 4.2rem / 3.8rem 3.2rem 4.4rem 3.4rem;
+    box-shadow: 0 0.55rem 0 -0.15rem rgba(18, 32, 63, 0.13), 0 1.4rem 2.2rem -1.2rem rgba(18, 32, 63, 0.45);
+    cursor: pointer;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+  }
+
+  .sky li:nth-child(3n + 2) .cloud { border-radius: 4.4rem 3.2rem 4.6rem 3rem / 3.2rem 4.2rem 3.4rem 4.4rem; }
+  .sky li:nth-child(3n) .cloud { border-radius: 3.6rem 3.6rem 3rem 4.8rem / 4.4rem 3.4rem 3.8rem 3.2rem; }
+
+  .cloud:hover { transform: translateY(-0.3rem); }
+
+  .cloud:focus-visible,
+  .trail button:focus-visible,
+  .bar a:focus-visible,
+  .up:focus-visible {
+    outline: 3px solid var(--signal);
+    outline-offset: 3px;
+  }
+
+  .cloud .step {
+    position: absolute;
+    top: 1rem;
+    right: 1.6rem;
+    font-size: 2.6rem;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    color: rgba(18, 32, 63, 0.12);
+  }
+
+  .cloud .name {
+    display: block;
+    font-size: 1.375rem;
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    padding-right: 2.5rem;
+    text-wrap: balance;
+  }
+
+  .cloud .says {
+    display: block;
+    margin-top: 0.5rem;
+    color: var(--cloud-soft);
+    font-size: 1rem;
+    line-height: 1.35;
+  }
+
+  .cloud .meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.9rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--cloud-soft);
+  }
+
+  /* ---- status marks: shape and fill both carry the meaning ---- */
+
+  .mark {
+    flex: none;
+    width: 0.8rem;
+    height: 0.8rem;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+  }
+
+  .mark.built { background: var(--sun); border-color: var(--sun); box-shadow: 0 0 0 3px rgba(244, 182, 26, 0.3); }
+  .mark.next { border-color: var(--signal); background: var(--signal); animation: beat 1.8s ease-in-out infinite; }
+  .mark.planned { background: transparent; opacity: 0.55; }
+  .mark.given { border-radius: 2px; transform: rotate(45deg) scale(0.85); background: currentColor; opacity: 0.5; }
+  .mark.parked { border-style: dashed; background: transparent; opacity: 0.6; }
+
+  @keyframes beat {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(226, 80, 47, 0.55); }
+    50% { box-shadow: 0 0 0 6px rgba(226, 80, 47, 0); }
+  }
+
+  /* ---- bottom of a universe ---- */
+
+  .floor { margin-top: 2.5rem; color: var(--ink-soft); }
+
+  .up {
+    font: inherit;
+    font-weight: 600;
+    color: var(--cloud-ink);
+    background: var(--cloud);
+    border: 0;
+    border-radius: 2rem;
+    padding: 0.7rem 1.3rem;
+    margin-top: 0.75rem;
+    cursor: pointer;
+  }
+
+  .legend {
+    margin-top: 4rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem 1.5rem;
+    font-size: 0.875rem;
+    color: var(--ink-soft);
+  }
+
+  .legend span { display: inline-flex; align-items: center; gap: 0.45rem; }
+
+  /* ---- stepping in and out ---- */
+
+  .stage.leave-in { animation: leave-in 0.24s ease-in forwards; }
+  .stage.leave-out { animation: leave-out 0.2s ease-in forwards; }
+  .stage.arrive-in { animation: arrive-in 0.34s cubic-bezier(0.2, 0.7, 0.2, 1); }
+  .stage.arrive-out { animation: arrive-out 0.3s cubic-bezier(0.2, 0.7, 0.2, 1); }
+
+  @keyframes leave-in { to { transform: scale(1.9); opacity: 0; } }
+  @keyframes leave-out { to { transform: scale(0.75); opacity: 0; } }
+  @keyframes arrive-in { from { transform: scale(0.82); opacity: 0; } }
+  @keyframes arrive-out { from { transform: scale(1.25); opacity: 0; } }
+
+  @media (min-width: 52rem) {
+    .sky { row-gap: 2.9rem; }
+    .sky li:nth-child(even) { transform: translateY(1.1rem); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .stage, .cloud, .mark, .depth, body { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="depth" id="depth"></div>
+
+<div class="wrap">
+  <header class="bar">
+    <a href="#/" id="home">Hot Server Swap</a>
+    <a href="https://github.com/amitdu6ey/experiments/tree/main/hot-server-swap">Read the design on GitHub</a>
+  </header>
+
+  <nav aria-label="Where you are">
+    <ol class="trail" id="trail"></ol>
+  </nav>
+
+  <main class="stage" id="stage"></main>
+
+  <footer class="legend" aria-label="What the marks mean">
+    <span><i class="mark built"></i>Built and proven by a checkpoint</span>
+    <span><i class="mark next"></i>Being built next</span>
+    <span><i class="mark planned"></i>Designed, not built yet</span>
+    <span><i class="mark given"></i>Taken as given</span>
+    <span><i class="mark parked"></i>Parked or rejected</span>
+  </footer>
+</div>
+
+<script src="map.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  var root = window.PROJECT_MAP;
+  var stage = document.getElementById("stage");
+  var trail = document.getElementById("trail");
+  var depthLayer = document.getElementById("depth");
+
+  // Sky colours by depth: pale at the top, deep blue at the bottom.
+  var SKIES = [
+    { a: "#d9ecfb", b: "#b9d8f5", ink: "#12203f", soft: "rgba(18,32,63,0.72)", rule: "rgba(18,32,63,0.18)" },
+    { a: "#b3d4f3", b: "#8fbcea", ink: "#12203f", soft: "rgba(18,32,63,0.74)", rule: "rgba(18,32,63,0.2)" },
+    { a: "#7fb0e6", b: "#5b93d8", ink: "#0e1a36", soft: "rgba(14,26,54,0.78)", rule: "rgba(14,26,54,0.24)" },
+    { a: "#3f6fb8", b: "#2b5299", ink: "#f6faff", soft: "rgba(246,250,255,0.82)", rule: "rgba(246,250,255,0.28)" },
+    { a: "#24448a", b: "#182f69", ink: "#f6faff", soft: "rgba(246,250,255,0.82)", rule: "rgba(246,250,255,0.28)" },
+    { a: "#16285c", b: "#0f1b43", ink: "#f6faff", soft: "rgba(246,250,255,0.82)", rule: "rgba(246,250,255,0.28)" }
+  ];
+
+  var STATUS_WORDS = {
+    built: "Built and proven",
+    next: "Being built next",
+    planned: "Designed, not built yet",
+    given: "Taken as given",
+    parked: "Parked"
+  };
+
+  var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var currentPath = null;
+
+  function pathFromHash() {
+    var raw = location.hash.replace(/^#\/?/, "");
+    return raw ? raw.split("/").filter(Boolean) : [];
+  }
+
+  // Walk the tree along a list of ids. Stops at the deepest cloud that exists.
+  function resolve(ids) {
+    var chain = [root];
+    var node = root;
+    for (var i = 0; i < ids.length; i++) {
+      var next = null;
+      var kids = node.kids || [];
+      for (var k = 0; k < kids.length; k++) {
+        if (kids[k].id === ids[i]) { next = kids[k]; break; }
+      }
+      if (!next) { break; }
+      chain.push(next);
+      node = next;
+    }
+    return chain;
+  }
+
+  function hashFor(chain) {
+    return "#/" + chain.slice(1).map(function (n) { return n.id; }).join("/");
+  }
+
+  // Count the buildable clouds under a node, and how many are built.
+  function tally(node) {
+    var total = 0, built = 0;
+    (function walk(n) {
+      if (n.kids && n.kids.length) { n.kids.forEach(walk); return; }
+      if (n.status === "built" || n.status === "next" || n.status === "planned") {
+        total += 1;
+        if (n.status === "built") { built += 1; }
+      }
+    })(node);
+    return { total: total, built: built };
+  }
+
+  function el(tag, className, text) {
+    var node = document.createElement(tag);
+    if (className) { node.className = className; }
+    if (text !== undefined) { node.textContent = text; }
+    return node;
+  }
+
+  function mark(status) {
+    var m = el("i", "mark " + status);
+    m.setAttribute("aria-hidden", "true");
+    return m;
+  }
+
+  function fact(list, label, text) {
+    if (!text) { return; }
+    var row = el("div");
+    row.appendChild(el("dt", null, label));
+    row.appendChild(el("dd", null, text));
+    list.appendChild(row);
+  }
+
+  function paintSky(depth) {
+    var sky = SKIES[Math.min(depth, SKIES.length - 1)];
+    var style = document.documentElement.style;
+    style.setProperty("--sky-a", sky.a);
+    style.setProperty("--sky-b", sky.b);
+    style.setProperty("--ink", sky.ink);
+    style.setProperty("--ink-soft", sky.soft);
+    style.setProperty("--rule", sky.rule);
+    depthLayer.style.opacity = "0";
+    requestAnimationFrame(function () { depthLayer.style.opacity = "1"; });
+  }
+
+  function renderTrail(chain) {
+    trail.textContent = "";
+    chain.forEach(function (node, index) {
+      var item = el("li");
+      var button = el("button", null, node.title);
+      button.type = "button";
+      if (index === chain.length - 1) {
+        button.setAttribute("aria-current", "page");
+      }
+      button.addEventListener("click", function () {
+        travel(chain.slice(0, index + 1), null);
+      });
+      item.appendChild(button);
+      trail.appendChild(item);
+    });
+  }
+
+  function renderStage(chain) {
+    var node = chain[chain.length - 1];
+    var parent = chain.length > 1 ? chain[chain.length - 2] : null;
+    stage.textContent = "";
+
+    var here = el("section", "here");
+    var heading = el("h1", null, node.title);
+    heading.tabIndex = -1;
+    here.appendChild(heading);
+    here.appendChild(el("p", "line", node.line));
+
+    if (node.status) {
+      var state = el("p", "state");
+      state.appendChild(mark(node.status));
+      state.appendChild(document.createTextNode(STATUS_WORDS[node.status]));
+      here.appendChild(state);
+    }
+
+    var facts = el("dl", "facts");
+    fact(facts, "What happens here", node.happens);
+    fact(facts, "What we do about it", node.answer);
+    fact(facts, "True before moving on", node.before);
+    fact(facts, "Proved by", node.proof);
+    if (facts.children.length) { here.appendChild(facts); }
+    stage.appendChild(here);
+
+    var kids = node.kids || [];
+    if (kids.length) {
+      var count = tally(node);
+      var label = kids.length + (kids.length === 1 ? " cloud" : " clouds") + " inside";
+      if (node.ordered) { label += ", in order"; }
+      if (count.total && node.tally !== false) { label += ". " + count.built + " of " + count.total + " built"; }
+      stage.appendChild(el("p", "inside", label));
+
+      var sky = el(node.ordered ? "ol" : "ul", "sky");
+      kids.forEach(function (kid, index) {
+        var item = el("li");
+        var cloud = el("button", "cloud");
+        cloud.type = "button";
+        if (node.ordered) { cloud.appendChild(el("span", "step", String(index + 1))); }
+        cloud.appendChild(el("span", "name", kid.title));
+        cloud.appendChild(el("span", "says", kid.line));
+
+        var meta = el("span", "meta");
+        var inner = tally(kid);
+        if (kid.kids && kid.kids.length) {
+          if (kid.status) { meta.appendChild(mark(kid.status)); }
+          var text = kid.kids.length + " inside";
+          if (inner.total && kid.tally !== false) { text += ", " + inner.built + " of " + inner.total + " built"; }
+          meta.appendChild(document.createTextNode(text));
+        } else if (kid.status) {
+          meta.appendChild(mark(kid.status));
+          meta.appendChild(document.createTextNode(STATUS_WORDS[kid.status]));
+        }
+        if (meta.childNodes.length) { cloud.appendChild(meta); }
+
+        cloud.addEventListener("click", function () {
+          travel(chain.concat([kid]), cloud);
+        });
+        item.appendChild(cloud);
+        sky.appendChild(item);
+      });
+      stage.appendChild(sky);
+    } else if (parent) {
+      var floor = el("div", "floor");
+      floor.appendChild(el("p", null, "This is as far down as this one goes."));
+      var up = el("button", "up", "Back up to " + parent.title);
+      up.type = "button";
+      up.addEventListener("click", function () { travel(chain.slice(0, -1), null); });
+      floor.appendChild(up);
+      stage.appendChild(floor);
+    }
+
+    document.title = (chain.length > 1 ? node.title + " · " : "") + "Hot Server Swap: the project map";
+    return heading;
+  }
+
+  function show(chain, direction, moveFocus) {
+    currentPath = hashFor(chain);
+    paintSky(chain.length - 1);
+    renderTrail(chain);
+    var heading = renderStage(chain);
+    window.scrollTo(0, 0);
+    if (moveFocus) { heading.focus({ preventScroll: true }); }
+    if (!reduceMotion && direction) {
+      stage.classList.remove("arrive-in", "arrive-out", "leave-in", "leave-out");
+      void stage.offsetWidth;
+      stage.classList.add(direction === "in" ? "arrive-in" : "arrive-out");
+    }
+  }
+
+  // Move to another cloud. Stepping in zooms toward the cloud that was pressed.
+  function travel(chain, fromCloud) {
+    var target = hashFor(chain);
+    if (target === currentPath) { return; }
+    var goingIn = target.length > (currentPath || "").length;
+
+    function arrive() {
+      stage.classList.remove("leave-in", "leave-out");
+      history.pushState(null, "", target);
+      show(chain, goingIn ? "in" : "out", true);
+    }
+
+    if (reduceMotion) { arrive(); return; }
+
+    if (fromCloud) {
+      var box = fromCloud.getBoundingClientRect();
+      var frame = stage.getBoundingClientRect();
+      stage.style.setProperty("--origin-x", (box.left + box.width / 2 - frame.left) + "px");
+      stage.style.setProperty("--origin-y", (box.top + box.height / 2 - frame.top) + "px");
+    } else {
+      stage.style.setProperty("--origin-x", "50%");
+      stage.style.setProperty("--origin-y", "30%");
+    }
+    stage.classList.add(goingIn ? "leave-in" : "leave-out");
+    window.setTimeout(arrive, goingIn ? 230 : 190);
+  }
+
+  function fromAddress() {
+    var chain = resolve(pathFromHash());
+    var target = hashFor(chain);
+    var direction = currentPath === null ? null : (target.length > currentPath.length ? "in" : "out");
+    show(chain, direction, currentPath !== null);
+  }
+
+  window.addEventListener("popstate", fromAddress);
+  window.addEventListener("hashchange", function () {
+    if (hashFor(resolve(pathFromHash())) !== currentPath) { fromAddress(); }
+  });
+
+  document.getElementById("home").addEventListener("click", function (event) {
+    event.preventDefault();
+    travel([root], null);
+  });
+
+  document.addEventListener("keydown", function (event) {
+    if (event.key !== "Escape") { return; }
+    var chain = resolve(pathFromHash());
+    if (chain.length > 1) { travel(chain.slice(0, -1), null); }
+  });
+
+  fromAddress();
+})();
+</script>
+</body>
+</html>
